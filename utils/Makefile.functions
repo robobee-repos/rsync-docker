@@ -1,0 +1,35 @@
+# Check that given variables are set and all have non-empty values,
+# die with an error otherwise.
+#
+# Author: http://stackoverflow.com/questions/10858261/abort-makefile-if-variable-not-set
+#
+# Params:
+#   1. Variable name(s) to test.
+#   2. (optional) Error message to print.
+check_defined = \
+    $(foreach 1,$1,$(__check_defined))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $(value 2), ($(strip $2)))))
+
+# Set to VERBOSE=true to enable debug output of bash commands.
+VERBOSE ?=
+ifdef VERBOSE
+SET_FLAG := -x
+else
+SET_FLAG := +x
+endif
+
+HOST_ADDRESS = $(shell sudo bash -c 'ifconfig eth0|grep -Po "inet \K[\d.]+"')
+
+# Retrieves the IP address of the container.
+container_ip = docker exec $(NAME) bash -c 'ifconfig eth0|grep -Po \"t addr:\K[\d.]+\"'
+
+# Checks if the container exists.
+container_exists = docker ps -a | egrep '^.*\s+$(NAME)$$'
+
+# Checks if the container is already running.
+container_running = docker ps | egrep '^.*\s+$(NAME)$$'
+
+# Checks if the data container exists.
+data_container_exists = docker ps -a | egrep '^.*\s+$(DATA_NAME)$$'

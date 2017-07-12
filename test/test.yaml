@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+
+  rsync:
+    image: erwin82/rsync:latest
+    volumes:
+      - ${ROOT_DIR}:/data
+    ports:
+      - 8873:8873
