@@ -34,6 +34,11 @@ The rsync daemon can be used to backup the mounted data directory.
 | ------------- | ----- |
 | /data | Reserved data directory. |
 
+## Usage
+
+A single module named `data` is created and the rsync daemon will have
+read and write access to the directory in the module.
+
 ## Test
 
 The docker-compose file `test.yaml` can be used to startup the rsync daemon 
