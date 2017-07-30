@@ -44,7 +44,7 @@ ADD rootfs/docker-entrypoint.sh /docker-entrypoint.sh
 RUN set -x \
   && chmod +x /docker-entrypoint.sh
 
-USER www-data
+USER root
 
 WORKDIR ${RSYNC_ROOT}
 

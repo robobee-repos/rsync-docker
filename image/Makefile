@@ -1,5 +1,5 @@
 REPOSITORY := erwin82
-NAME := rsync
+NAME := rsync-priv
 VERSION ?= debian-stretch-r1-1
 
 build: _build ##@targets Builds the docker image.
