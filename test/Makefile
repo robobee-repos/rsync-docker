@@ -4,7 +4,7 @@ include ../utils/Makefile.functions
 NAME := rsync
 ROOT_DIR:=$(shell realpath root)
 
-up: setup ##@targets Starts docker compose.
+test: setup ##@targets Starts docker compose.
 	export ROOT_DIR="$(ROOT_DIR)" \
 	&& docker-compose -p ${NAME} -f test.yaml up
 .PHONY: up
@@ -22,6 +22,6 @@ rm: ##@targets Removes docker containers.
 setup:
 	if ! [ -d $(ROOT_DIR) ]; then \
 	mkdir -p $(ROOT_DIR); \
-	sudo chown 33:33 -R $(ROOT_DIR); \
+	sudo chown 200:200 -R $(ROOT_DIR); \
 	fi
 .PHONY: setup
