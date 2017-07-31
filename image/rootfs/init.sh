@@ -10,6 +10,18 @@ function copy_sshd() {
   rsync -u -v /etc/ssh/ssh_host_* ./
 }
 
+function import_rsync_keys() {
+  if [[ "x$RSYNC_AUTHORIZED_KEY" != "x" ]]; then
+    echo "$RSYNC_AUTHORIZED_KEY" > /home/rsync/.ssh/authorized_keys
+  fi
+  dir="/keys-in"
+  if [ ! -d "${dir}" ]; then
+    return
+  fi
+  cd "${dir}"
+  find -name "*pub" -exec cat '{}' >> /home/rsync/.ssh/authorized_keys \;
+}
+
 # First, make sure we have a host key; there are multiple host key
 # files, we just check that one of them exists.
 if [ ! -e /etc/ssh/ssh_host_rsa_key ]; then
@@ -66,6 +78,7 @@ if [ "${1}" = 'sshd' ]; then
 fi
 
 copy_sshd
+import_rsync_keys
 cd "/home/rsync"
 echo "Executing $*"
 exec $*

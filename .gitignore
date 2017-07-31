@@ -1,3 +1,4 @@
 log.txt
 test/root/**
 test/tmp/**
+.env

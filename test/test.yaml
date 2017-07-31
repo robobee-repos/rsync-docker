@@ -4,6 +4,7 @@ services:
 
   rsync:
     image: erwin82/rsync:latest
+    env_file: .env
     volumes:
       - ${ROOT_DIR}:/data
     ports:

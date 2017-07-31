@@ -70,7 +70,7 @@ RUN set -x \
 
 USER rsync
 
-WORKDIR ${RSYNC_ROOT}
+WORKDIR /data
 
 ENV USER rsync
 
