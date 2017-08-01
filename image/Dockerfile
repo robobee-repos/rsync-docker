@@ -74,4 +74,4 @@ ENV DEBUG_SCRIPTS false
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/usr/sbin/sshd", "-D", "-e"]
