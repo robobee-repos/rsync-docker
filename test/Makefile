@@ -25,3 +25,6 @@ setup:
 	sudo chown 200:200 -R $(ROOT_DIR); \
 	fi
 .PHONY: setup
+
+try-rsync: ##@targets Tries to run rsync on the docker container.
+	rsync -e 'ssh -F ./ssh_config' -v test.yaml rsync@localhost:/data/

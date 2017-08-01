@@ -1,0 +1,7 @@
+Host localhost
+Port 2222
+StrictHostKeyChecking no
+
+Host 172.26.0.2
+Port 2222
+StrictHostKeyChecking no
