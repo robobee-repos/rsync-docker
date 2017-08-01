@@ -11,8 +11,10 @@ function copy_sshd() {
 }
 
 function import_rsync_keys() {
+  cd /home/rsync/.ssh
+  cat id_rsa.pub >> authorized_keys
   if [[ "x$RSYNC_AUTHORIZED_KEY" != "x" ]]; then
-    echo "$RSYNC_AUTHORIZED_KEY" > /home/rsync/.ssh/authorized_keys
+    echo "$RSYNC_AUTHORIZED_KEY" >> authorized_keys
   fi
   dir="/keys-in"
   if [ ! -d "${dir}" ]; then
@@ -20,6 +22,14 @@ function import_rsync_keys() {
   fi
   cd "${dir}"
   find -name "*pub" -exec cat '{}' >> /home/rsync/.ssh/authorized_keys \;
+}
+
+function localhost_known_hosts() {
+  cd /home/rsync/.ssh
+  cat <<EOF > config
+Host localhost
+Port 2222
+EOF
 }
 
 # First, make sure we have a host key; there are multiple host key
@@ -76,6 +86,7 @@ fi
 
 copy_sshd
 import_rsync_keys
+localhost_known_hosts
 cd "/home/rsync"
 echo "Executing $*"
 exec $*
