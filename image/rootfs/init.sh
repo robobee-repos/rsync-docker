@@ -1,5 +1,8 @@
 #!/bin/bash
-set -ex
+set -e
+if [[ "x${DEBUG_SCRIPTS}" == "xtrue" ]]; then
+  set -x
+fi
 
 function copy_sshd() {
   dir="/ssh-in"

@@ -74,6 +74,8 @@ WORKDIR /data
 
 ENV USER rsync
 
+ENV DEBUG_SCRIPTS false
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["/usr/sbin/sshd", "-D"]

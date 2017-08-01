@@ -1,5 +1,8 @@
 #!/bin/bash
-set -xe
+set -e
+if [[ "x${DEBUG_SCRIPTS}" == "xtrue" ]]; then
+  set -x
+fi
 
 function check_files_exists() {
   ls $1 1> /dev/null 2>&1
