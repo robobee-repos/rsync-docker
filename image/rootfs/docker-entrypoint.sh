@@ -34,31 +34,8 @@ function patch_sshd() {
   sed -i -e 's/#\?Port\s*[[:digit:]]*/Port 2222/' /etc/ssh/sshd_config
 }
 
-function create_rsync_config() {
-  cd "${RSYNC_ROOT}"
-  echo "$RSYNC_USERNAME:$RSYNC_PASSWORD" > ${RSYNC_ROOT}/rsyncd.secrets
-  chmod 0400 ${RSYNC_ROOT}/rsyncd.secrets
-  cat <<EOF > ${RSYNC_ROOT}/rsyncd.conf
-pid file = ${RSYNC_ROOT}/rsyncd.pid
-log file = /dev/stdout
-timeout = 300
-max connections = 10
-[data]
-    hosts deny = *
-    hosts allow = ${RSYNC_HOSTS_ALLOW}
-    read only = false
-    path = ${DATA_DIR}
-    comment = data directory
-    auth users = $RSYNC_USERNAME
-    secrets file = ${RSYNC_ROOT}/rsyncd.secrets
-    lock file = ${RSYNC_ROOT}/rsyncd.lock
-    use chroot = false
-EOF
-}
-
 echo "Running as `id`"
 copy_sshd
 patch_sshd
-create_rsync_config
 cd "/home/rsync"
 exec /init.sh "$@"
