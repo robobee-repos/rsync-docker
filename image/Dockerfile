@@ -50,11 +50,7 @@ RUN set -x \
 VOLUME /etc/ssh-in
 VOLUME ${DATA_DIR}
 
-# Rsync port.
-
-EXPOSE 8873
-
-# Rsync port.
+# Ssh port.
 
 EXPOSE 2222
 
