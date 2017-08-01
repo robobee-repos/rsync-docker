@@ -43,10 +43,7 @@ fi
 
 cd /home/rsync
 
-# If .ssh has been mounted, ensure it has the right permissions
-if [ -d ./.ssh ]; then
-   chown -R rsync:rsync ./.ssh
-else
+if [ ! -d ./.ssh ]; then
   CLIENT_DIR="/home/rsync/client"
   # .ssh does not exist; As an alternative, we allow the .ssh/client
   # folder from the repositories volume to be copied.
