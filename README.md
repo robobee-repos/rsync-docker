@@ -17,16 +17,15 @@ The rsync daemon can be used to backup the mounted data directory.
 
 | Variable | Default | Description |
 | ------------- | ------------- | ----- |
-| RSYNC_USERNAME | rsync | User name to access the data directory. |
-| RSYNC_PASSWORD | rsync | Password to access the data directory. |
-| RSYNC_HOSTS_ALLOW | * | List of hosts that are allowed to connect to the rsync daemon. |
+| RSYNC_AUTHORIZED_KEY | | Ssh public key that will be added to the authorized keys. |
+| TRUST_HOSTS | | Hosts that will be added to the known hosts. |
 | DATA_DIR | /data | Path of the data directory. |
 
 ## Exposed Ports
 
 | Port | Description |
-| ------------- | ----- |
-| 8873  | rsync |
+| ----- | ----- |
+| 2222  | ssh |
 
 ## Directories
 
@@ -34,15 +33,56 @@ The rsync daemon can be used to backup the mounted data directory.
 | ------------- | ----- |
 | /data | Reserved data directory. |
 
+## Input Configration
+
+| Source | Destination | Description |
+| ------------- | ------------- | ----- |
+| /keys-in/*pub |  | Keys are added to the authorized keys. |
+| /ssh-in/ssh_host_* | /etc/ssh/ |  |
+| /ssh-in/sshd_config | /etc/ssh/ | OpenSSH server configuration. |
+
 ## Usage
 
-A single module named `data` is created and the rsync daemon will have
-read and write access to the directory in the module.
+### Basic
+
+OpenSSH server will be started and accepts connections on port 2222. The
+user can connect to the server using the specified keys and use rsync
+to backup or restore files.
+
+If deployed on Kubernetes, the service can be exposed via NodePort.
+
+```
+kubectl expose deploy rsync --type=NodePort --name=rsync-public
+rsync -r -v rsync@node:/data/\* /tmp/
+```
+
+### Use Tunnel
+
+If the NodePort is blocked or if used behind a firewall a tunnel can be created
+to the node. For that the most confortable method is to create a `config` file
+for a fake host `rsync-host`. The fake host must be added to the `hosts` file.
+
+* `/etc/hosts`
+
+```
+127.1.1.1 rsync-host
+```
+
+* `~/.ssh/config`
+
+```
+Host rsync-host
+Hostname 127.1.1.1
+Port 31233
+User rsync
+IdentityFile rsyncssh_id_rsa
+ProxyCommand ssh user@node nc %h %p
+```
 
 ## Test
 
-The docker-compose file `test.yaml` can be used to startup the rsync daemon 
-container. The rsync daemon will be available at `localhost:8873`.
+The docker-compose file `test.yaml` can be used to startup the ssh daemon 
+container. The ssh daemon will be available at `localhost:2222`.
 
 ```
 docker-compose -f test.yaml up
@@ -57,7 +97,7 @@ make up
 To test the rsync daemon container.
 
 ```
-rsync -rv rsync://host:8873/data/. .
+rsync -rv rsync@localhost:2222/data/. .
 ```
 
 ## License
