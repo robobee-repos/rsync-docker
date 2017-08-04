@@ -33,12 +33,19 @@ function copy_sshd() {
 }
 
 function patch_sshd() {
-  sed -i -e "s/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/" /etc/ssh/sshd_config
-  sed -i -e 's/#\?Port\s*[[:digit:]]*/Port 2222/' /etc/ssh/sshd_config
+  sed -i -e "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/" /etc/ssh/sshd_config
+  sed -i -e 's/#\?Port.*/Port 2222/' /etc/ssh/sshd_config
+  sed -i -e 's|#\?PidFile.*|PidFile /run/sshd.pid|' /etc/ssh/sshd_config
+  sed -i -e 's|#\?#PermitRootLogin.*|PermitRootLogin prohibit-password|' /etc/ssh/sshd_config
 }
 
-echo "Running as `id`"
+echo "Running as: `id`"
+echo "User: $USER"
+echo "Arguments: ${*}"
+if [[ "x$SET_SU" == "x" ]]; then
+  su $USER -c /bin/bash -c "export SET_SU=false; /docker-entrypoint.sh ${*}"
+fi
 copy_sshd
 patch_sshd
 cd "/home/rsync"
-exec /init.sh "$@"
+exec /init.sh "${@}"

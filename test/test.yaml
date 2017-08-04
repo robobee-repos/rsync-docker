@@ -5,12 +5,14 @@ services:
   rsync:
     image: erwin82/rsync:latest
     env_file: .env
+    environment:
+      USER: ${USER}
     volumes:
       - ${ROOT_DIR}:/data
     ports:
       - 2222:2222
     healthcheck:
-      test: ["CMD", "sh", "-i", "-c", "cd /home/rsync/.ssh; if [ ! -e known_hosts ]; then ssh-keyscan -p 2222 -H localhost > known_hosts; fi; rsync -v rsync@localhost:/data/test.yaml /tmp/"]
+      test: ["CMD", "/readiness.sh", "/data/test.yaml"]
       interval: 1m30s
       timeout: 10s
       retries: 3

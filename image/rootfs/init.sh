@@ -35,6 +35,12 @@ Port 2222
 EOF
 }
 
+function copy_root_ssh() {
+  if [[ "`id -u`" == "0" ]]; then
+    cp -r /home/rsync/.ssh /root/
+  fi
+}
+
 # First, make sure we have a host key; there are multiple host key
 # files, we just check that one of them exists.
 if [ ! -e /etc/ssh/ssh_host_rsa_key ]; then
@@ -55,8 +61,10 @@ if [ ! -e /etc/ssh/ssh_host_rsa_key ]; then
 fi
 
 cd /home/rsync
+ls -al
 
 if [ ! -d ./.ssh ]; then
+  mkdir .ssh
   CLIENT_DIR="/home/rsync/client"
   # .ssh does not exist; As an alternative, we allow the .ssh/client
   # folder from the repositories volume to be copied.
@@ -90,6 +98,7 @@ fi
 copy_sshd
 import_rsync_keys
 localhost_known_hosts
+copy_root_ssh
 cd "/home/rsync"
 echo "Executing $*"
 exec $*

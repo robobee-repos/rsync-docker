@@ -1,6 +1,6 @@
 REPOSITORY := erwin82
 NAME := rsync
-VERSION ?= v2-4
+VERSION ?= v2-8
 
 build: _build ##@targets Builds the docker image.
 

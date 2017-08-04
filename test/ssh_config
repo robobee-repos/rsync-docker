@@ -1,7 +1,9 @@
 Host localhost
 Port 2222
 StrictHostKeyChecking no
+IdentityFile ./rsync_id_rsa
 
 Host 172.26.0.2
 Port 2222
 StrictHostKeyChecking no
+IdentityFile ./rsync_id_rsa

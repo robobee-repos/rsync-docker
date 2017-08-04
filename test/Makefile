@@ -6,6 +6,13 @@ ROOT_DIR:=$(shell realpath root)
 
 test: setup ##@targets Starts docker compose.
 	export ROOT_DIR="$(ROOT_DIR)" \
+	&& export USER=rsync \
+	&& docker-compose -p ${NAME} -f test.yaml up
+.PHONY: up
+
+test-root: setup ##@targets Starts docker container with root rights.
+	export ROOT_DIR="$(ROOT_DIR)" \
+	&& export USER=root \
 	&& docker-compose -p ${NAME} -f test.yaml up
 .PHONY: up
 
@@ -28,3 +35,6 @@ setup:
 
 try-rsync: ##@targets Tries to run rsync on the docker container.
 	rsync -e 'ssh -F ./ssh_config' -v test.yaml rsync@localhost:/data/
+
+try-rsync-root: ##@targets Tries to run rsync on the docker container.
+	rsync -e 'ssh -F ./ssh_config' -v test.yaml root@localhost:/data/
