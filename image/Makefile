@@ -1,6 +1,6 @@
-REPOSITORY := erwin82
+REPOSITORY := robobeerun
 NAME := rsync
-VERSION ?= v2
+VERSION ?= v3.1.2-r2-1
 
 build: _build ##@targets Builds the docker image.
 

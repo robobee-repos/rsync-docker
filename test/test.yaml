@@ -3,16 +3,17 @@ version: '3.1'
 services:
 
   rsync:
-    image: erwin82/rsync:latest
+    image: robobeerun/rsync:latest
     env_file: .env
     environment:
-      USER: ${USER}
+      USER: "${USER}"
+      DEBUG: "true"
     volumes:
-      - ${ROOT_DIR}:/data
+      - "./root/data:/data"
     ports:
-      - 2222:2222
+      - "2222:2222"
     healthcheck:
       test: ["CMD", "/readiness.sh", "/data/test.yaml"]
-      interval: 1m30s
+      interval: 60s
       timeout: 10s
       retries: 3

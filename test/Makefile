@@ -1,40 +1,27 @@
 include ../utils/Makefile.help
 include ../utils/Makefile.functions
 
-NAME := rsync
-ROOT_DIR:=$(shell realpath root)
+export NAME := rsync
+export ROOT_DIR := root
+export USER := root
 
 test: setup ##@targets Starts docker compose.
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& export USER=rsync \
-	&& docker-compose -p ${NAME} -f test.yaml up
-.PHONY: up
-
-test-root: setup ##@targets Starts docker container with root rights.
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& export USER=root \
-	&& docker-compose -p ${NAME} -f test.yaml up
+	docker-compose -p ${NAME} -f test.yaml up
 .PHONY: up
 
 clean: rm ##@targets Removes docker containers and created files.
+	docker-compose -p ${NAME} -f test.yaml rm -f
 	if [ -d $(ROOT_DIR) ]; then \
 	sudo rm -rf $(ROOT_DIR); \
 	fi
 
 rm: ##@targets Removes docker containers.
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& docker-compose -p ${NAME} -f test.yaml stop \
-	&& docker-compose -p ${NAME} -f test.yaml rm
+	docker-compose -p ${NAME} -f test.yaml stop
 
 setup:
-	if ! [ -d $(ROOT_DIR) ]; then \
-	mkdir -p $(ROOT_DIR); \
-	sudo chown 200:200 -R $(ROOT_DIR); \
-	fi
+	mkdir -p $(ROOT_DIR)
+	sudo chmod o+rwX $(ROOT_DIR)
 .PHONY: setup
 
 try-rsync: ##@targets Tries to run rsync on the docker container.
-	rsync -e 'ssh -F ./ssh_config' -v test.yaml rsync@localhost:/data/
-
-try-rsync-root: ##@targets Tries to run rsync on the docker container.
 	rsync -e 'ssh -F ./ssh_config' -v test.yaml root@localhost:/data/

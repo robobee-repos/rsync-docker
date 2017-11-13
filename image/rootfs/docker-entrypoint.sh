@@ -1,22 +1,5 @@
 #!/bin/bash
 set -e
-if [[ "x${DEBUG_SCRIPTS}" == "xtrue" ]]; then
-  set -x
-fi
-
-function check_files_exists() {
-  ls $1 1> /dev/null 2>&1
-}
-
-function copy_file() {
-  file="$1"; shift
-  dir="$1"; shift
-  mod="$1"; shift
-  if [ -e "$file" ]; then
-    cp "$file" $dir/"$file"
-    chmod $mod $dir/"$file"
-  fi
-}
 
 function copy_sshd() {
   dir="/ssh-in"
@@ -39,13 +22,19 @@ function patch_sshd() {
   sed -i -e 's|#\?#PermitRootLogin.*|PermitRootLogin prohibit-password|' /etc/ssh/sshd_config
 }
 
+source /docker-entrypoint-utils.sh
+set_debug
+echo "########################"
 echo "Running as: `id`"
 echo "User: $USER"
 echo "Arguments: ${*}"
+echo "########################"
+
 if [[ "x$SET_SU" == "x" ]]; then
   su $USER -c /bin/bash -c "export SET_SU=false; /docker-entrypoint.sh ${*}"
 fi
-copy_sshd
+copy_files "/ssh-in" "/etc/ssh" "ssh_host_*"
+copy_files "/ssh-in" "/etc/ssh" "sshd_config"
 patch_sshd
 cd "/home/rsync"
-exec /init.sh "${@}"
+exec -- ${BASH_CMD} /init.sh "${@}"
