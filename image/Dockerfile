@@ -73,6 +73,10 @@ WORKDIR /data
 
 ENV USER rsync
 
+ENV RSYNC_CHOWN false
+
+ENV RSYNC_CHMOD false
+
 ENV DEBUG_SCRIPTS false
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
