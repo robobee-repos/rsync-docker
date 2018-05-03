@@ -15,6 +15,8 @@ The image includes the rsync daemon and configures a separate data directory. Th
 | Variable | Default | Description |
 | ------------- | ------------- | ----- |
 | `RSYNC_AUTHORIZED_KEY` | | Ssh public key that will be added to the authorized keys. |
+| `RSYNC_SSH_PORT` | 2222 | Ssh port. |
+| `RSYNC_STRICT_HOST_KEY_CHECKING_NO` | false | Set to true to disable strict host checking for connections. |
 | `TRUST_HOSTS` | | Hosts that will be added to the known hosts. |
 | `DATA_DIR` | `/data` | Path of the data directory. |
 

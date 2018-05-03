@@ -1,8 +1,6 @@
 #!/bin/bash
-set -e
-if [[ "x${DEBUG_SCRIPTS}" == "xtrue" ]]; then
-  set -x
-fi
+source /docker-entrypoint-utils.sh
+set_debug
 
 function copy_sshd() {
   dir="/ssh-in"
@@ -31,8 +29,11 @@ function localhost_known_hosts() {
   cd /home/rsync/.ssh
   cat <<EOF > config
 Host localhost
-Port 2222
+Port ${RSYNC_SSH_PORT}
 EOF
+  if [[ "x${RSYNC_STRICT_HOST_KEY_CHECKING_NO}" = "xtrue" ]]; then
+    echo "StrictHostKeyChecking=no" >> config
+  fi
 }
 
 function copy_root_ssh() {
@@ -61,7 +62,6 @@ if [ ! -e /etc/ssh/ssh_host_rsa_key ]; then
 fi
 
 cd /home/rsync
-ls -al
 
 if [ ! -d ./.ssh ]; then
   mkdir .ssh
