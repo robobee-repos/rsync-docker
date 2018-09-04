@@ -15,7 +15,7 @@ RUN set -x \
   && export DEBIAN_FRONTEND noninteractive \
   && apt-get update \
   && apt-get install -y \
-  sudo openssh-server rsync locales \
+  sudo openssh-server rsync locales unzip \
   && rm -rf /var/lib/apt/lists/* \
   && locale-gen en_US.UTF-8 \
   && dpkg-reconfigure locales
